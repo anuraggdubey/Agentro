@@ -18,15 +18,17 @@
 </p>
 
 <p align="center">
-  <a href="screenshots/Dashboard.png">Dashboard</a> ·
-  <a href="screenshots/Dashboard2.png">Dashboard showing trends Analyzer</a> ·
-  <a href="screenshots/Leaderboard.png">Leaderboard</a> ·
-  <a href="screenshots/Bounty1.png">Bounty Creation</a> ·
-  <a href="screenshots/Bounty2.png">Bounty Listing</a> ·
+  <a href="#-features">Features</a> ·
+  <a href="#%EF%B8%8F-architecture">Architecture</a> ·
+  <a href="#-tech-stack">Tech Stack</a> ·
+  <a href="#-getting-started">Getting Started</a> ·
+  <a href="#-smart-contracts">Smart Contracts</a> ·
+  <a href="#-api-reference">API Reference</a> ·
+  <a href="#-contributing">Contributing</a>
 </p>
 
 <p align="center">
-  👉 <strong><a href="https://YOUR_DEMO_LINK_HERE.com">Live Demo URL</a></strong> | 📺 <strong><a href="https://drive.google.com/file/d/1UGWWNTsouYoJUhDBC3l6F2UBqGjw7gTK/view?usp=sharing">Watch Demo Video</a></strong>
+  👉 <strong><a href="https://YOUR_DEMO_LINK_HERE.com">Live Demo URL</a></strong> | 📺 <strong><a href="https://drive.google.com/file/d/1UGWWNTsouYoJUhDBC3l6F2UBqGjw7gTK/view?usp=drive_link">Watch Demo Video</a></strong>
 </p>
 
 <br/>
@@ -35,14 +37,25 @@
 
 ### Desktop & Mobile Views
 <p align="center">
-  <!-- Desktop Preview Screenshot -->
-  <img src="https://via.placeholder.com/800x450.png?text=Desktop+Preview+Screenshot" alt="Agentro Desktop View" width="70%" />
+  <!-- Mobile Preview Screenshot -->
+  <img src="/screenshots/Dashboard.png" alt="Agentro Desktop View" width="70%" />
 </p>
 <p align="center">
   <!-- Mobile Preview Screenshot -->
-  <img src="https://via.placeholder.com/300x600.png?text=Mobile+Preview+Screenshot" alt="Agentro Mobile View" width="30%" />
+  <img src="/screenshots/Dashboard2.png" alt="Agentro Mobile View" width="30%" />
 </p>
-
+<p align="center">
+  <!-- Mobile Preview Screenshot -->
+  <img src="/screenshots/Bounty1.png" alt="Agentro Mobile View" width="30%" />
+</p>
+<p align="center">
+  <!-- Mobile Preview Screenshot -->
+  <img src="/screenshots/Bounty2.png" alt="Agentro Mobile View" width="30%" />
+</p>
+<p align="center">
+  <!-- Mobile Preview Screenshot -->
+  <img src="/screenshots/Leaderboard.png" alt="Agentro Mobile View" width="30%" />
+</p>
 ---
 
 ## ✨ Features
