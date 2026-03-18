@@ -18,17 +18,15 @@
 </p>
 
 <p align="center">
-  <a href="#-features">Features</a> ·
-  <a href="#%EF%B8%8F-architecture">Architecture</a> ·
-  <a href="#-tech-stack">Tech Stack</a> ·
-  <a href="#-getting-started">Getting Started</a> ·
-  <a href="#-smart-contracts">Smart Contracts</a> ·
-  <a href="#-api-reference">API Reference</a> ·
-  <a href="#-contributing">Contributing</a>
+  <a href="screenshots/Dashboard.png">Dashboard</a> ·
+  <a href="screenshots/Dashboard2.png">Dashboard showing trends Analyzer</a> ·
+  <a href="screenshots/Leaderboard.png">Leaderboard</a> ·
+  <a href="screenshots/Bounty1.png">Bounty Creation</a> ·
+  <a href="screenshots/Bounty2.png">Bounty Listing</a> ·
 </p>
 
 <p align="center">
-  👉 <strong><a href="https://YOUR_DEMO_LINK_HERE.com">Live Demo URL</a></strong> | 📺 <strong><a href="https://youtube.com/YOUR_VIDEO_LINK">Watch Demo Video</a></strong>
+  👉 <strong><a href="https://YOUR_DEMO_LINK_HERE.com">Live Demo URL</a></strong> | 📺 <strong><a href="https://drive.google.com/file/d/1UGWWNTsouYoJUhDBC3l6F2UBqGjw7gTK/view?usp=sharing">Watch Demo Video</a></strong>
 </p>
 
 <br/>
