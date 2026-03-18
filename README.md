@@ -27,7 +27,23 @@
   <a href="#-contributing">Contributing</a>
 </p>
 
+<p align="center">
+  👉 <strong><a href="https://YOUR_DEMO_LINK_HERE.com">Live Demo URL</a></strong> | 📺 <strong><a href="https://youtube.com/YOUR_VIDEO_LINK">Watch Demo Video</a></strong>
+</p>
+
 <br/>
+
+## 📱 Previews
+
+### Desktop & Mobile Views
+<p align="center">
+  <!-- Desktop Preview Screenshot -->
+  <img src="https://via.placeholder.com/800x450.png?text=Desktop+Preview+Screenshot" alt="Agentro Desktop View" width="70%" />
+</p>
+<p align="center">
+  <!-- Mobile Preview Screenshot -->
+  <img src="https://via.placeholder.com/300x600.png?text=Mobile+Preview+Screenshot" alt="Agentro Mobile View" width="30%" />
+</p>
 
 ---
 
@@ -287,14 +303,14 @@ Visit **http://localhost:3000** — the app will connect to the backend at `http
 
 All contracts are deployed on **Stellar Soroban Testnet**.
 
-### Contract Addresses
+### Contract Addresses & Details
 
-| Contract | Address | Description |
-|---|---|---|
-| **Payment** | `CCAOSNZNVNZP...VD7VQ` | Subscription management & XLM payment rails |
-| **Agent Manager** | `CBYZ4EGIIWXY...J54VS` | AI agent creation, registry & usage billing |
-| **Bounty** | `CALEZTBUJFWH...RVLK2` | Escrow-based bounty lifecycle management |
-| **Leaderboard** | `CAGTBHWT2OU4...DI4V` | On-chain rankings & earnings tracking |
+| Contract | Address | Tx Hash | Token / Pool Address | Description |
+|---|---|---|---|---|
+| **Payment** | `CCAOSNZNVNZP...VD7VQ` | `[Update TxHash]` | `[Token Address]` | Subscription management & XLM payment rails |
+| **Agent Manager** | `CBYZ4EGIIWXY...J54VS` | `[Update TxHash]` | N/A | AI agent creation, registry & usage billing |
+| **Bounty** | `CALEZTBUJFWH...RVLK2` | `[Update TxHash]` | `[Token Address]` | Escrow-based bounty lifecycle management |
+| **Leaderboard** | `CAGTBHWT2OU4...DI4V` | `[Update TxHash]` | N/A | On-chain rankings & earnings tracking |
 
 ### Contract Events
 
