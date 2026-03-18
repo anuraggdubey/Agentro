@@ -142,10 +142,12 @@ fn extend_instance(env: &Env) {
 #[cfg(test)]
 mod test {
     use super::*;
-    use agentro_agent_token::AgentTokenContract;
-    use agentro_interfaces::AgentTokenClient;
     use agentro_payment::PaymentContract;
-    use soroban_sdk::testutils::{Address as _, Ledger};
+    use soroban_sdk::{
+        testutils::{Address as _, Ledger},
+        token::{StellarAssetClient, TokenClient},
+    };
+    const TEST_ALLOWANCE_EXPIRY: u32 = 1_000_000;
 
     #[test]
     fn agent_creation_and_usage_payment_flow() {
@@ -155,25 +157,19 @@ mod test {
             ledger.timestamp = 1_800_000_000;
         });
 
-        let token_id = env.register(AgentTokenContract, ());
-        let payment_id = env.register(PaymentContract, ());
-        let manager_id = env.register(AgentManagerContract, ());
-
-        let token = AgentTokenClient::new(&env, &token_id);
-        let payment = PaymentContractClient::new(&env, &payment_id);
-        let manager = AgentManagerContractClient::new(&env, &manager_id);
-
         let admin = Address::generate(&env);
         let treasury = Address::generate(&env);
         let owner = Address::generate(&env);
         let user = Address::generate(&env);
+        let token_id = env.register_stellar_asset_contract_v2(admin.clone()).address();
+        let payment_id = env.register(PaymentContract, ());
+        let manager_id = env.register(AgentManagerContract, ());
 
-        token.initialize(
-            &admin,
-            &String::from_str(&env, "Agentro Token"),
-            &String::from_str(&env, "AGT"),
-            &7,
-        );
+        let token_admin = StellarAssetClient::new(&env, &token_id);
+        let token = TokenClient::new(&env, &token_id);
+        let payment = PaymentContractClient::new(&env, &payment_id);
+        let manager = AgentManagerContractClient::new(&env, &manager_id);
+
         payment.initialize(&admin, &token_id, &treasury, &75, &(30 * 24 * 60 * 60));
         manager.initialize(&admin, &payment_id, &75);
 
@@ -181,8 +177,8 @@ mod test {
         assert_eq!(manager.get_agent(&agent_id).owner, owner);
         assert_eq!(manager.list_user_agents(&owner).len(), 1);
 
-        token.mint(&user, &500);
-        token.approve(&user, &payment_id, &100);
+        token_admin.mint(&user, &500);
+        token.approve(&user, &payment_id, &100, &TEST_ALLOWANCE_EXPIRY);
         manager.use_agent(&1, &user, &None);
 
         assert_eq!(token.balance(&treasury), 75);

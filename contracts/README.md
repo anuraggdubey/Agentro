@@ -25,11 +25,10 @@ stellar contract build
 ## Invocation Examples
 
 ```powershell
-stellar contract invoke --network testnet --source agentro-admin --id <TOKEN_ID> -- mint --to <USER_ADDRESS> --amount 500000000
-stellar contract invoke --network testnet --source <USER_IDENTITY> --id <TOKEN_ID> -- approve --from <USER_ADDRESS> --spender <PAYMENT_ID> --amount 10000000
+stellar contract invoke --network testnet --source <USER_IDENTITY> --id <XLM_ASSET_CONTRACT_ID> -- approve --from <USER_ADDRESS> --spender <PAYMENT_ID> --amount 10000000 --expiration_ledger 4294967295
 stellar contract invoke --network testnet --source <USER_IDENTITY> --id <PAYMENT_ID> -- pay_for_analysis --user <USER_ADDRESS> --amount 10000000
 stellar contract invoke --network testnet --source <USER_IDENTITY> --id <BOUNTY_ID> -- create_bounty --creator <USER_ADDRESS> --metadata '{"title":"Model audit","description":"Audit strategy agent"}' --reward 30000000
-stellar contract invoke --network testnet --source <USER_IDENTITY> --id <TOKEN_ID> -- approve --from <USER_ADDRESS> --spender <BOUNTY_ID> --amount 30000000
+stellar contract invoke --network testnet --source <USER_IDENTITY> --id <XLM_ASSET_CONTRACT_ID> -- approve --from <USER_ADDRESS> --spender <BOUNTY_ID> --amount 30000000 --expiration_ledger 4294967295
 stellar contract invoke --network testnet --source <USER_IDENTITY> --id <BOUNTY_ID> -- fund_bounty --bounty_id 1
 stellar contract invoke --network testnet --source <USER_IDENTITY> --id <BOUNTY_ID> -- complete_bounty --resolver <USER_ADDRESS> --bounty_id 1 --winner <WINNER_ADDRESS>
 stellar contract invoke --network testnet --source <OWNER_IDENTITY> --id <AGENT_MANAGER_ID> -- create_agent --owner <OWNER_ADDRESS> --metadata ipfs://bafy...
@@ -49,7 +48,7 @@ stellar contract invoke --network testnet --source <USER_IDENTITY> --id <AGENT_M
 
 ## Live Testnet Deployment
 
-- `AGT Token`: `CBHWUYJV7ST3Y2FFGIZQLAVSNAAPIAX7C54LDLDEEJG2YMNSL2DW7MJK`
+- `XLM Asset SAC`: derive from `Asset.native().contractId("Test SDF Network ; September 2015")`
 - `Payment`: `CCAOSNZNVNZPJRPPPOVLGRWWNCEYPFYFB6EF5NAJF4FE43KIWB5VD7VQ`
 - `Leaderboard`: `CAGTBHWT2OU4OS6EDK3HHJ3A6DVLXFI3OE2WBUGUWTOATWY5AR3CDI4V`
 - `Bounty`: `CALEZTBUJFWH7KQTW34LJL7JVG7X4TR7GBDPOSJZEDMOFRGIYFDRVL62`

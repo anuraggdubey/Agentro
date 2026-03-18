@@ -54,7 +54,7 @@ export default function BountiesPage() {
 
     try {
       setSubmitting(true);
-      setStatus("Creating bounty, approving AGT, and funding escrow...");
+      setStatus("Creating bounty, approving XLM, and funding escrow...");
       await createAndFundBounty({
         address,
         title: form.title,
@@ -84,7 +84,7 @@ export default function BountiesPage() {
 
     try {
       setSubmitting(true);
-      setStatus("Completing bounty and releasing AGT reward...");
+      setStatus("Completing bounty and releasing XLM reward...");
       await completeBounty({
         resolver: address,
         bountyId,
@@ -108,7 +108,7 @@ export default function BountiesPage() {
             Bounty <span className="text-gradient">Market</span>
           </h1>
           <p className="text-muted font-medium mt-1">
-            Create, fund, and settle AGT-denominated bounties directly on Stellar.
+            Create, fund, and settle XLM-denominated bounties directly on Stellar.
           </p>
         </div>
         <ConnectWalletButton />
@@ -125,7 +125,7 @@ export default function BountiesPage() {
                 Create Bounty
               </h2>
               <p className="text-sm text-white/60 mt-1">
-                This flow creates the bounty, approves AGT, and funds escrow.
+                This flow creates the bounty, approves XLM, and funds escrow.
               </p>
             </div>
           </div>
@@ -177,7 +177,7 @@ export default function BountiesPage() {
 
             <label className="block space-y-2">
               <span className="text-[10px] uppercase tracking-[0.25em] font-black text-muted">
-                Reward (AGT)
+                Reward (XLM)
               </span>
               <input
                 type="number"
@@ -259,7 +259,7 @@ export default function BountiesPage() {
                       </h3>
                     </div>
                     <div className="rounded-xl bg-primary/10 px-3 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-primary">
-                      {bounty.reward} AGT
+                      {bounty.reward} XLM
                     </div>
                   </div>
 
@@ -306,7 +306,7 @@ export default function BountiesPage() {
 
       <div className="glass-panel rounded-2xl p-6 text-sm text-white/60 flex items-start gap-3">
         <Wallet className="text-highlight shrink-0 mt-0.5" size={18} />
-        Creating a bounty requires multiple wallet signatures because the contract first creates the bounty, then approves AGT spending, then locks the reward in escrow.
+        Creating a bounty requires multiple wallet signatures because the contract first creates the bounty, then approves XLM spending, then locks the reward in escrow.
       </div>
     </div>
   );

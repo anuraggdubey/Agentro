@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, ChevronDown, Loader2, Wallet, X } from "lucide-react";
 import { CopyAddressButton } from "@/components/CopyAddressButton";
 import { shortenAddress } from "@/lib/stellar";
 import { useWallet } from "@/hooks/useWallet";
+import { getNativeXlmBalance } from "@/services/contractService";
 
 export function ConnectWalletButton() {
   const {
@@ -19,6 +20,39 @@ export function ConnectWalletButton() {
     selectedWalletId,
   } = useWallet();
   const [isOpen, setIsOpen] = useState(false);
+  const [balanceState, setBalanceState] = useState<{ address: string | null; balance: string | null }>({
+    address: null,
+    balance: null,
+  });
+
+  useEffect(() => {
+    if (!isConnected || !address) {
+      return;
+    }
+
+    const connectedAddress = address;
+    let cancelled = false;
+
+    async function loadBalance() {
+      try {
+        const nextBalance = await getNativeXlmBalance(connectedAddress);
+        if (!cancelled) {
+          setBalanceState({ address: connectedAddress, balance: nextBalance });
+        }
+      } catch {
+        if (!cancelled) {
+          setBalanceState({ address: connectedAddress, balance: null });
+        }
+      }
+    }
+
+    loadBalance();
+    return () => {
+      cancelled = true;
+    };
+  }, [address, isConnected]);
+
+  const balance = isConnected && address && balanceState.address === address ? balanceState.balance : null;
 
   async function handleConnect(walletId: string) {
     try {
@@ -40,6 +74,9 @@ export function ConnectWalletButton() {
             </p>
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white">
               {shortenAddress(address)}
+            </p>
+            <p className="mt-1 text-[9px] font-black uppercase tracking-[0.22em] text-highlight">
+              {balance === null ? "Loading XLM..." : `${balance} XLM`}
             </p>
           </div>
           <CopyAddressButton address={address} />

@@ -4,7 +4,7 @@ Deployed on March 18, 2026 to Stellar Soroban Testnet.
 
 ## Contract Addresses
 
-- AGT Token: `CBHWUYJV7ST3Y2FFGIZQLAVSNAAPIAX7C54LDLDEEJG2YMNSL2DW7MJK`
+- XLM Asset SAC: derive from `Asset.native().contractId("Test SDF Network ; September 2015")`
 - Payment: `CCAOSNZNVNZPJRPPPOVLGRWWNCEYPFYFB6EF5NAJF4FE43KIWB5VD7VQ`
 - Leaderboard: `CAGTBHWT2OU4OS6EDK3HHJ3A6DVLXFI3OE2WBUGUWTOATWY5AR3CDI4V`
 - Bounty: `CALEZTBUJFWH7KQTW34LJL7JVG7X4TR7GBDPOSJZEDMOFRGIYFDRVL62`
@@ -18,8 +18,8 @@ Deployed on March 18, 2026 to Stellar Soroban Testnet.
 
 ## Initialization Parameters
 
-- AGT decimals: `7`
-- AGT symbol: `AGT`
+- XLM decimals: `7`
+- XLM symbol: `XLM`
 - Minimum subscription amount: `10000000`
 - Subscription period: `2592000` seconds
 - Default analysis fee: `10000000`
@@ -28,7 +28,7 @@ Deployed on March 18, 2026 to Stellar Soroban Testnet.
 
 Executed successfully:
 
-1. Minted `500000000` AGT to admin and example user.
+1. Funded the admin and example user with testnet XLM and approved the XLM SAC for contract spending.
 2. Created agent `1`.
 3. Approved and paid for analysis from the example user.
 4. Created bounty `1`.

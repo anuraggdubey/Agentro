@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   TrendingUp, 
@@ -11,9 +11,7 @@ import {
   Facebook,
   ArrowUpRight,
   Zap,
-  MoreVertical,
   Loader2,
-  ChevronRight,
   X,
   Wallet,
   Trophy,
@@ -24,7 +22,6 @@ import {
   AreaChart, 
   Area, 
   XAxis, 
-  YAxis, 
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer,
@@ -33,7 +30,7 @@ import { fetchTrends, generateStrategy } from "@/lib/api";
 import { useWallet } from "@/hooks/useWallet";
 import {
   getRecentActivity,
-  getTokenBalance,
+  getNativeXlmBalance,
   getTopUsers,
   getUserAgents,
   getUserStats,
@@ -55,12 +52,20 @@ interface Trend {
   url: string;
 }
 
+interface Strategy {
+  title: string;
+  hook: string;
+  idea: string;
+  viralityScore: number;
+  reasoning: string;
+}
+
 export default function Dashboard() {
   const { address, isConnected } = useWallet();
   const [trends, setTrends] = useState<Trend[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [strategy, setStrategy] = useState<any>(null);
+  const [strategy, setStrategy] = useState<Strategy | null>(null);
   const [generating, setGenerating] = useState(false);
   const [activeTrend, setActiveTrend] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -81,7 +86,7 @@ export default function Dashboard() {
         if (data.trends?.length > 0) {
           setActiveTrend(data.trends[0].title);
         }
-      } catch (err) {
+      } catch {
         setError("Failed to fetch trends.");
       } finally {
         setLoading(false);
@@ -102,12 +107,12 @@ export default function Dashboard() {
 
     async function loadWalletData() {
       try {
-        const [agtBalance, agents, stats] = await Promise.all([
-          getTokenBalance(connectedAddress),
+        const [xlmBalance, agents, stats] = await Promise.all([
+          getNativeXlmBalance(connectedAddress),
           getUserAgents(connectedAddress),
           getUserStats(connectedAddress),
         ]);
-        setBalance(agtBalance);
+        setBalance(xlmBalance);
         setAgentCount(agents.length);
         setUserStats(stats);
       } catch (walletError) {
@@ -145,8 +150,8 @@ export default function Dashboard() {
       const data = await fetchTrends(query);
       setTrends(data.trends || []);
       if (data.trends?.length > 0) setActiveTrend(data.trends[0].title);
-    } catch (err) {
-      console.error(err);
+      } catch (categoryError) {
+        console.error(categoryError);
     } finally {
       setLoading(false);
     }
@@ -159,8 +164,8 @@ export default function Dashboard() {
     try {
       const data = await generateStrategy(activeTrend, "general");
       setStrategy(data);
-    } catch (err) {
-      console.error(err);
+      } catch (strategyError) {
+      console.error(strategyError);
     } finally {
       setGenerating(false);
     }
@@ -380,7 +385,7 @@ export default function Dashboard() {
 
                   <div className="p-8 rounded-2xl glass-panel border-white/5 shadow-inner bg-white/2">
                     <p className="text-[9px] font-black text-primary uppercase tracking-[0.4em] mb-4">Viral Hook</p>
-                    <p className="text-2xl font-bold text-white italic leading-tight">"{strategy.hook}"</p>
+                    <p className="text-2xl font-bold text-white italic leading-tight">&quot;{strategy.hook}&quot;</p>
                   </div>
 
                   <div className="space-y-4">
@@ -398,7 +403,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <p className="text-sm font-medium text-white/60 leading-relaxed italic border-l-2 border-highlight/30 pl-6">
-                      "{strategy.reasoning}"
+                      &quot;{strategy.reasoning}&quot;
                     </p>
                   </div>
                   
@@ -472,7 +477,7 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
-                { label: "AGT Balance", value: `${balance} AGT`, icon: Coins },
+                { label: "XLM Balance", value: `${balance} XLM`, icon: Coins },
                 { label: "Owned Agents", value: agentCount.toString(), icon: Activity },
                 {
                   label: "Bounties Won",
@@ -498,7 +503,7 @@ export default function Dashboard() {
                   Total Bounty Earnings
                 </p>
                 <p className="mt-3 text-lg font-black text-highlight">
-                  {userStats.totalEarnings} AGT
+                  {userStats.totalEarnings} XLM
                 </p>
               </div>
             ) : null}
@@ -526,7 +531,7 @@ export default function Dashboard() {
                     </span>
                   </div>
                   {item.amount ? (
-                    <p className="mt-2 text-sm text-highlight font-black">{item.amount} AGT</p>
+                    <p className="mt-2 text-sm text-highlight font-black">{item.amount} XLM</p>
                   ) : null}
                 </div>
               ))}
@@ -543,7 +548,7 @@ export default function Dashboard() {
                       #{index + 1} {entry.user}
                     </p>
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-highlight">
-                      {entry.totalEarnings} AGT
+                      {entry.totalEarnings} XLM
                     </p>
                   </div>
                 ))}

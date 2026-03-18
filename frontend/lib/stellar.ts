@@ -1,8 +1,10 @@
-import { Networks } from "@stellar/stellar-sdk";
+import { Asset, Networks } from "@stellar/stellar-sdk";
 
 export const STELLAR_NETWORK = process.env.NEXT_PUBLIC_STELLAR_NETWORK ?? "testnet";
 export const STELLAR_RPC_URL =
   process.env.NEXT_PUBLIC_STELLAR_RPC_URL ?? "https://soroban-testnet.stellar.org";
+export const STELLAR_HORIZON_URL =
+  process.env.NEXT_PUBLIC_STELLAR_HORIZON_URL ?? "https://horizon-testnet.stellar.org";
 export const STELLAR_NETWORK_PASSPHRASE =
   process.env.NEXT_PUBLIC_STELLAR_NETWORK_PASSPHRASE ?? Networks.TESTNET;
 export const STELLAR_READ_ADDRESS =
@@ -23,11 +25,13 @@ export const CONTRACT_IDS = {
     process.env.NEXT_PUBLIC_PAYMENT_CONTRACT_ID ??
     "CCAOSNZNVNZPJRPPPOVLGRWWNCEYPFYFB6EF5NAJF4FE43KIWB5VD7VQ",
   token:
+    process.env.NEXT_PUBLIC_XLM_ASSET_CONTRACT_ID ??
     process.env.NEXT_PUBLIC_AGT_TOKEN_CONTRACT_ID ??
-    "CBHWUYJV7ST3Y2FFGIZQLAVSNAAPIAX7C54LDLDEEJG2YMNSL2DW7MJK",
+    Asset.native().contractId(STELLAR_NETWORK_PASSPHRASE),
 } as const;
 
 export const AGT_DECIMALS = 7;
+export const XLM_DECIMALS = 7;
 
 export function shortenAddress(address?: string | null) {
   if (!address) {
@@ -59,6 +63,19 @@ export function formatAgtAmount(value: bigint | number | string | undefined | nu
   const fraction = amount % divisor;
   const fractionText = fraction.toString().padStart(AGT_DECIMALS, "0").replace(/0+$/, "");
   return fractionText ? `${whole.toString()}.${fractionText}` : whole.toString();
+}
+
+export function formatXlmAmount(value: string | number | undefined | null) {
+  if (value === undefined || value === null) {
+    return "0";
+  }
+
+  const numeric = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(numeric)) {
+    return "0";
+  }
+
+  return numeric.toFixed(XLM_DECIMALS).replace(/\.?0+$/, "");
 }
 
 export function friendlyError(error: unknown) {

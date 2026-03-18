@@ -2,10 +2,10 @@
 
 ## Contract Map
 
-- `agent-token`: AGT fungible token with balances, approvals, allowances, minting, and contract-friendly `transfer_from`.
-- `payment`: subscription and analysis payment rail. Pulls approved AGT from users into the treasury and tracks subscription expiry on-chain.
+- `agent-token`: legacy custom token contract kept in the workspace for reference and tests.
+- `payment`: subscription and analysis payment rail. Pulls approved XLM from users into the treasury and tracks subscription expiry on-chain.
 - `agent-manager`: creates AI agent records and emits usage events. Uses the payment contract for paid agent usage.
-- `bounty`: locks AGT in escrow, completes bounties, and releases rewards on-chain.
+- `bounty`: locks XLM in escrow, completes bounties, and releases rewards on-chain.
 - `leaderboard`: stores canonical per-user earnings and completion counts. Supports top-user reads for smaller datasets and emits update events.
 
 ## Storage Strategy

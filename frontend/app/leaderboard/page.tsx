@@ -49,7 +49,7 @@ export default function LeaderboardPage() {
             Leader<span className="text-gradient">board</span>
           </h1>
           <p className="text-muted font-medium mt-1">
-            Live AGT earnings and bounty completion rankings from Soroban.
+            Live XLM earnings and bounty completion rankings from Soroban.
           </p>
         </div>
         <ConnectWalletButton />
@@ -77,7 +77,7 @@ export default function LeaderboardPage() {
               <p className="text-[9px] font-black uppercase tracking-[0.26em] text-muted">
                 Total Earnings
               </p>
-              <p className="mt-4 text-3xl font-black text-highlight">{currentUser.totalEarnings} AGT</p>
+              <p className="mt-4 text-3xl font-black text-highlight">{currentUser.totalEarnings} XLM</p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-card p-6">
               <p className="text-[9px] font-black uppercase tracking-[0.26em] text-muted">
@@ -98,7 +98,7 @@ export default function LeaderboardPage() {
             <h2 className="text-xl font-black tracking-tight uppercase text-white text-xs">
               Top Users
             </h2>
-            <p className="text-sm text-white/60 mt-1">Ranked by total AGT earnings, then bounty wins.</p>
+            <p className="text-sm text-white/60 mt-1">Ranked by total XLM earnings, then bounty wins.</p>
           </div>
         </div>
 
@@ -131,7 +131,7 @@ export default function LeaderboardPage() {
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xl font-black text-highlight">{leader.totalEarnings} AGT</p>
+                    <p className="text-xl font-black text-highlight">{leader.totalEarnings} XLM</p>
                     {isCurrentUser ? (
                       <p className="mt-2 text-[10px] font-black uppercase tracking-[0.2em] text-white">
                         You

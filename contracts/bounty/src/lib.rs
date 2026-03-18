@@ -1,9 +1,9 @@
 #![no_std]
 
-use agentro_interfaces::{AgentTokenClient, LeaderboardClient};
+use agentro_interfaces::LeaderboardClient;
 use soroban_sdk::{
     contract, contracterror, contractimpl, contracttype, panic_with_error, symbol_short, Address,
-    Env, String, Vec,
+    Env, MuxedAddress, String, Vec, token::TokenClient,
 };
 
 const INSTANCE_BUMP_AMOUNT: u32 = 7 * 24 * 60 * 60 / 5;
@@ -107,7 +107,7 @@ impl BountyContract {
         let creator = bounty.creator.clone();
         creator.require_auth();
 
-        AgentTokenClient::new(&env, &get_token(&env)).transfer_from(
+        TokenClient::new(&env, &get_token(&env)).transfer_from(
             &env.current_contract_address(),
             &creator,
             &env.current_contract_address(),
@@ -142,9 +142,9 @@ impl BountyContract {
             creator.require_auth();
         }
 
-        AgentTokenClient::new(&env, &get_token(&env)).transfer(
+        TokenClient::new(&env, &get_token(&env)).transfer(
             &env.current_contract_address(),
-            &winner,
+            &MuxedAddress::from(winner.clone()),
             &bounty.reward,
         );
         LeaderboardClient::new(&env, &get_leaderboard(&env))
@@ -223,37 +223,31 @@ fn extend_instance(env: &Env) {
 #[cfg(test)]
 mod test {
     use super::*;
-    use agentro_agent_token::AgentTokenContract;
     use agentro_leaderboard::LeaderboardContract;
-    use soroban_sdk::testutils::Address as _;
+    use soroban_sdk::{testutils::Address as _, token::{StellarAssetClient, TokenClient}};
+    const TEST_ALLOWANCE_EXPIRY: u32 = 1_000_000;
 
     #[test]
     fn full_bounty_lifecycle_releases_reward_and_updates_leaderboard() {
         let env = Env::default();
         env.mock_all_auths();
-        let token_id = env.register(AgentTokenContract, ());
-        let leaderboard_id = env.register(LeaderboardContract, ());
-        let bounty_id = env.register(BountyContract, ());
-
-        let token = AgentTokenClient::new(&env, &token_id);
-        let leaderboard = LeaderboardClient::new(&env, &leaderboard_id);
-        let bounty = BountyContractClient::new(&env, &bounty_id);
-
         let admin = Address::generate(&env);
         let creator = Address::generate(&env);
         let winner = Address::generate(&env);
+        let token_id = env.register_stellar_asset_contract_v2(admin.clone()).address();
+        let leaderboard_id = env.register(LeaderboardContract, ());
+        let bounty_id = env.register(BountyContract, ());
 
-        token.initialize(
-            &admin,
-            &String::from_str(&env, "Agentro Token"),
-            &String::from_str(&env, "AGT"),
-            &7,
-        );
+        let token_admin = StellarAssetClient::new(&env, &token_id);
+        let token = TokenClient::new(&env, &token_id);
+        let leaderboard = LeaderboardClient::new(&env, &leaderboard_id);
+        let bounty = BountyContractClient::new(&env, &bounty_id);
+
         leaderboard.initialize(&admin);
         leaderboard.add_source(&bounty_id);
         bounty.initialize(&admin, &token_id, &leaderboard_id);
-        token.mint(&creator, &1_000);
-        token.approve(&creator, &bounty_id, &300);
+        token_admin.mint(&creator, &1_000);
+        token.approve(&creator, &bounty_id, &300, &TEST_ALLOWANCE_EXPIRY);
 
         let created_id = bounty.create_bounty(
             &creator,

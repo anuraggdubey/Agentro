@@ -1,9 +1,9 @@
 #![no_std]
 
-use agentro_interfaces::{AgentTokenClient, PaymentContractTrait};
+use agentro_interfaces::PaymentContractTrait;
 use soroban_sdk::{
     contract, contracterror, contractimpl, contracttype, panic_with_error, symbol_short, Address,
-    Env,
+    Env, token::TokenClient,
 };
 
 const INSTANCE_BUMP_AMOUNT: u32 = 7 * 24 * 60 * 60 / 5;
@@ -72,7 +72,7 @@ impl PaymentContractTrait for PaymentContract {
         let base = if current > now { current } else { now };
         let expires_at = base + get_subscription_period(&env);
 
-        AgentTokenClient::new(&env, &token).transfer_from(
+        TokenClient::new(&env, &token).transfer_from(
             &env.current_contract_address(),
             &user,
             &treasury,
@@ -148,9 +148,12 @@ fn get_subscription_period(env: &Env) -> u64 {
 #[cfg(test)]
 mod test {
     use super::*;
-    use agentro_agent_token::AgentTokenContract;
     use agentro_interfaces::PaymentContractClient;
-    use soroban_sdk::testutils::{Address as _, Ledger};
+    use soroban_sdk::{
+        testutils::{Address as _, Ledger},
+        token::StellarAssetClient,
+    };
+    const TEST_ALLOWANCE_EXPIRY: u32 = 1_000_000;
 
     #[test]
     fn payment_flow_locks_user_allowance_and_updates_subscription() {
@@ -160,24 +163,17 @@ mod test {
             ledger.timestamp = 1_700_000_000;
         });
 
-        let token_id = env.register(AgentTokenContract, ());
-        let payment_id = env.register(PaymentContract, ());
-        let token = AgentTokenClient::new(&env, &token_id);
-        let payment = PaymentContractClient::new(&env, &payment_id);
-
         let admin = Address::generate(&env);
         let treasury = Address::generate(&env);
         let user = Address::generate(&env);
+        let token_id = env.register_stellar_asset_contract_v2(admin.clone()).address();
+        let payment_id = env.register(PaymentContract, ());
+        let token = StellarAssetClient::new(&env, &token_id);
+        let payment = PaymentContractClient::new(&env, &payment_id);
 
-        token.initialize(
-            &admin,
-            &soroban_sdk::String::from_str(&env, "Agentro Token"),
-            &soroban_sdk::String::from_str(&env, "AGT"),
-            &7,
-        );
         payment.initialize(&admin, &token_id, &treasury, &100, &(30 * 24 * 60 * 60));
         token.mint(&user, &500);
-        token.approve(&user, &payment_id, &200);
+        token.approve(&user, &payment_id, &200, &TEST_ALLOWANCE_EXPIRY);
 
         payment.pay_for_analysis(&user, &100);
 

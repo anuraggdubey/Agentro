@@ -11,11 +11,13 @@ import {
 import { StellarWalletsKit } from "@creit.tech/stellar-wallets-kit";
 import {
   CONTRACT_IDS,
+  STELLAR_HORIZON_URL,
   STELLAR_NETWORK_PASSPHRASE,
   STELLAR_READ_ADDRESS,
   STELLAR_RPC_URL,
   friendlyError,
   formatAgtAmount,
+  formatXlmAmount,
   parseAgtAmount,
 } from "@/lib/stellar";
 
@@ -61,6 +63,7 @@ export type ActivityItem = {
 };
 
 const server = new rpc.Server(STELLAR_RPC_URL);
+const APPROVAL_LEDGER_BUFFER = 100_000;
 
 function getViewAccount(address: string) {
   return server.getAccount(address);
@@ -196,6 +199,26 @@ export async function getTokenBalance(address: string) {
   return formatAgtAmount(BigInt(raw));
 }
 
+export async function getNativeXlmBalance(address: string) {
+  const response = await fetch(`${STELLAR_HORIZON_URL}/accounts/${address}`, {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error("Unable to load Stellar account balance.");
+  }
+
+  const account = (await response.json()) as {
+    balances?: Array<{
+      asset_type?: string;
+      balance?: string;
+    }>;
+  };
+
+  const nativeBalance = account.balances?.find((entry) => entry.asset_type === "native")?.balance;
+  return formatXlmAmount(nativeBalance ?? "0");
+}
+
 export async function getTokenBalanceRaw(address: string) {
   const raw = await simulateRead<bigint | string | number>(CONTRACT_IDS.token, "balance", [
     toAddressScVal(address),
@@ -293,10 +316,12 @@ export async function getRecentActivity(limit = 8) {
 
 export async function approveToken(address: string, spender: string, amount: string) {
   const reward = parseAgtAmount(amount);
+  const latestLedger = await server.getLatestLedger();
   return submitTransaction(address, CONTRACT_IDS.token, "approve", [
     toAddressScVal(address),
     toAddressScVal(spender),
     toI128(reward),
+    nativeToScVal(latestLedger.sequence + APPROVAL_LEDGER_BUFFER, { type: "u32" }),
   ]);
 }
 
@@ -344,12 +369,12 @@ export async function createAndFundBounty(params: {
   const balanceRaw = await getTokenBalanceRaw(params.address);
 
   if (rewardRaw <= BigInt(0)) {
-    throw new Error("Enter a reward greater than 0 AGT.");
+    throw new Error("Enter a reward greater than 0 XLM.");
   }
 
   if (balanceRaw < rewardRaw) {
     throw new Error(
-      `Insufficient AGT balance. You need ${formatAgtAmount(rewardRaw)} AGT but only have ${formatAgtAmount(balanceRaw)} AGT.`,
+      `Insufficient XLM balance. You need ${formatAgtAmount(rewardRaw)} XLM but only have ${formatAgtAmount(balanceRaw)} XLM.`,
     );
   }
 
@@ -360,7 +385,7 @@ export async function createAndFundBounty(params: {
 
     const allowanceRaw = await getTokenAllowanceRaw(params.address, CONTRACT_IDS.bounty);
     if (allowanceRaw < rewardRaw) {
-      throw new Error("AGT approval did not complete. Please approve the reward amount and try again.");
+      throw new Error("XLM approval did not complete. Please approve the reward amount and try again.");
     }
 
     await fundBounty(params.address, created.id);
@@ -394,12 +419,12 @@ export function getReadableError(error: unknown) {
     return "This bounty is not funded yet. Fund the bounty before trying to complete it.";
   }
 
-  if (message.includes("CBHWUYJV7ST3Y2FFGIZQLAVSNAAPIAX7C54LDLDEEJG2YMNSL2DW7MJK") && message.includes("#4")) {
-    return "Insufficient AGT balance for this transaction.";
+  if (message.includes(CONTRACT_IDS.token) && message.includes("#4")) {
+    return "Insufficient XLM balance for this transaction.";
   }
 
-  if (message.includes("CBHWUYJV7ST3Y2FFGIZQLAVSNAAPIAX7C54LDLDEEJG2YMNSL2DW7MJK") && message.includes("#5")) {
-    return "Insufficient AGT allowance. Approve the token spend and try again.";
+  if (message.includes(CONTRACT_IDS.token) && message.includes("#5")) {
+    return "Insufficient XLM allowance. Approve the token spend and try again.";
   }
 
   return message;

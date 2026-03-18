@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Search, Bell, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
@@ -9,9 +9,43 @@ import { ConnectWalletButton } from "@/components/ConnectWalletButton";
 import { CopyAddressButton } from "@/components/CopyAddressButton";
 import { useWallet } from "@/hooks/useWallet";
 import { shortenAddress } from "@/lib/stellar";
+import { getNativeXlmBalance } from "@/services/contractService";
 
 export function Topbar() {
   const { address, isConnected } = useWallet();
+  const [balanceState, setBalanceState] = useState<{ address: string | null; balance: string | null }>({
+    address: null,
+    balance: null,
+  });
+
+  useEffect(() => {
+    if (!isConnected || !address) {
+      return;
+    }
+
+    const connectedAddress = address;
+    let cancelled = false;
+
+    async function loadBalance() {
+      try {
+        const nextBalance = await getNativeXlmBalance(connectedAddress);
+        if (!cancelled) {
+          setBalanceState({ address: connectedAddress, balance: nextBalance });
+        }
+      } catch {
+        if (!cancelled) {
+          setBalanceState({ address: connectedAddress, balance: null });
+        }
+      }
+    }
+
+    loadBalance();
+    return () => {
+      cancelled = true;
+    };
+  }, [address, isConnected]);
+
+  const balance = isConnected && address && balanceState.address === address ? balanceState.balance : null;
 
   return (
     <header className="h-20 glass-panel border-b-0 border-t-0 border-r-0 border-l-0 sticky top-0 z-30 px-8 flex items-center justify-between w-full max-w-full overflow-hidden shrink-0 rounded-none shadow-none gap-6">
@@ -50,6 +84,9 @@ export function Topbar() {
                 <p className="text-[9px] text-muted font-black uppercase tracking-widest mt-0.5 px-2 py-0.5 bg-white/5 rounded-md inline-flex items-center gap-1">
                   <ShieldCheck size={10} />
                   Wallet Verified
+                </p>
+                <p className="mt-1 text-[9px] font-black uppercase tracking-[0.22em] text-highlight">
+                  {balance === null ? "Loading XLM..." : `${balance} XLM`}
                 </p>
               </div>
               {address ? <CopyAddressButton address={address} /> : null}
