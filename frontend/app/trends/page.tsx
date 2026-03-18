@@ -220,19 +220,20 @@ export default function TrendsPage() {
                 data={heatmapData}
                 onClick={(data: { payload?: HeatmapPoint } | undefined) => {
                   if (data && data.payload) {
+                    const point = data.payload;
                     // Try to find a matching trend in the API results or just use the name
-                    const matchingTrend = trends.find(t => t.title.toLowerCase().includes(data.payload.name.toLowerCase()));
+                    const matchingTrend = trends.find(t => t.title.toLowerCase().includes(point.name.toLowerCase()));
                     if (matchingTrend) {
                       handleTrendClick(matchingTrend);
                     } else {
                       // Fallback for demo data
-                      setSelectedTrend(data.payload.name);
+                      setSelectedTrend(point.name);
                       setGenerating(true);
                       setTimeout(() => {
                         setStrategy({
-                          hook: `The ${data.payload.name} Surge`,
-                          idea: `Leverage the current ${data.payload.name} momentum by creating high-frequency content nodes.`,
-                          viralityScore: data.payload.z / 10,
+                          hook: `The ${point.name} Surge`,
+                          idea: `Leverage the current ${point.name} momentum by creating high-frequency content nodes.`,
+                          viralityScore: point.z / 10,
                           reasoning: "High signal density detected in recent platform sync."
                         });
                         setGenerating(false);

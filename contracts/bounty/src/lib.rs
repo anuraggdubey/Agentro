@@ -2,8 +2,8 @@
 
 use agentro_interfaces::LeaderboardClient;
 use soroban_sdk::{
-    contract, contracterror, contractimpl, contracttype, panic_with_error, symbol_short, Address,
-    Env, MuxedAddress, String, Vec, token::TokenClient,
+    contract, contracterror, contractimpl, contracttype, panic_with_error, symbol_short,
+    token::TokenClient, Address, Env, MuxedAddress, String, Vec,
 };
 
 const INSTANCE_BUMP_AMOUNT: u32 = 7 * 24 * 60 * 60 / 5;
@@ -61,9 +61,13 @@ impl BountyContract {
         admin.require_auth();
         env.storage().instance().set(&DataKey::Admin, &admin);
         env.storage().instance().set(&DataKey::Token, &token);
-        env.storage().instance().set(&DataKey::Leaderboard, &leaderboard);
+        env.storage()
+            .instance()
+            .set(&DataKey::Leaderboard, &leaderboard);
         env.storage().instance().set(&DataKey::NextBountyId, &1_u64);
-        env.storage().instance().set(&DataKey::BountyIds, &Vec::<u64>::new(&env));
+        env.storage()
+            .instance()
+            .set(&DataKey::BountyIds, &Vec::<u64>::new(&env));
         extend_instance(&env);
     }
 
@@ -87,11 +91,15 @@ impl BountyContract {
             completed_at: None,
         };
 
-        env.storage().persistent().set(&DataKey::Bounty(id), &bounty);
+        env.storage()
+            .persistent()
+            .set(&DataKey::Bounty(id), &bounty);
         let mut ids: Vec<u64> = env.storage().instance().get(&DataKey::BountyIds).unwrap();
         ids.push_back(id);
         env.storage().instance().set(&DataKey::BountyIds, &ids);
-        env.storage().instance().set(&DataKey::NextBountyId, &(id + 1));
+        env.storage()
+            .instance()
+            .set(&DataKey::NextBountyId, &(id + 1));
 
         env.events()
             .publish((symbol_short!("bnty_crt"), creator), (id, reward));
@@ -116,9 +124,13 @@ impl BountyContract {
 
         bounty.funded = true;
         bounty.funded_at = Some(env.ledger().timestamp());
-        env.storage().persistent().set(&DataKey::Bounty(bounty_id), &bounty);
-        env.events()
-            .publish((symbol_short!("bnt_fund"), creator), (bounty_id, bounty.reward));
+        env.storage()
+            .persistent()
+            .set(&DataKey::Bounty(bounty_id), &bounty);
+        env.events().publish(
+            (symbol_short!("bnt_fund"), creator),
+            (bounty_id, bounty.reward),
+        );
         extend_instance(&env);
     }
 
@@ -147,13 +159,18 @@ impl BountyContract {
             &MuxedAddress::from(winner.clone()),
             &bounty.reward,
         );
-        LeaderboardClient::new(&env, &get_leaderboard(&env))
-            .record_bounty_completion(&env.current_contract_address(), &winner, &bounty.reward);
+        LeaderboardClient::new(&env, &get_leaderboard(&env)).record_bounty_completion(
+            &env.current_contract_address(),
+            &winner,
+            &bounty.reward,
+        );
 
         bounty.completed = true;
         bounty.completed_at = Some(env.ledger().timestamp());
         bounty.winner = Some(winner.clone());
-        env.storage().persistent().set(&DataKey::Bounty(bounty_id), &bounty);
+        env.storage()
+            .persistent()
+            .set(&DataKey::Bounty(bounty_id), &bounty);
         env.events().publish(
             (symbol_short!("bnt_done"), creator, winner),
             (bounty_id, bounty.reward),
@@ -224,7 +241,10 @@ fn extend_instance(env: &Env) {
 mod test {
     use super::*;
     use agentro_leaderboard::LeaderboardContract;
-    use soroban_sdk::{testutils::Address as _, token::{StellarAssetClient, TokenClient}};
+    use soroban_sdk::{
+        testutils::Address as _,
+        token::{StellarAssetClient, TokenClient},
+    };
     const TEST_ALLOWANCE_EXPIRY: u32 = 1_000_000;
 
     #[test]
@@ -234,7 +254,9 @@ mod test {
         let admin = Address::generate(&env);
         let creator = Address::generate(&env);
         let winner = Address::generate(&env);
-        let token_id = env.register_stellar_asset_contract_v2(admin.clone()).address();
+        let token_id = env
+            .register_stellar_asset_contract_v2(admin.clone())
+            .address();
         let leaderboard_id = env.register(LeaderboardContract, ());
         let bounty_id = env.register(BountyContract, ());
 

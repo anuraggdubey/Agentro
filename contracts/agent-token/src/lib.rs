@@ -56,7 +56,9 @@ impl AgentTokenContractTrait for AgentTokenContract {
         let admin = Self::admin(env.clone());
         admin.require_auth();
         let next = Self::balance(env.clone(), to.clone()) + amount;
-        env.storage().persistent().set(&DataKey::Balance(to.clone()), &next);
+        env.storage()
+            .persistent()
+            .set(&DataKey::Balance(to.clone()), &next);
         env.events().publish((symbol_short!("mint"), to), amount);
         extend_instance(&env);
     }
@@ -139,9 +141,10 @@ fn spend_allowance(env: &Env, from: &Address, spender: &Address, amount: i128) {
     if current < amount {
         panic_with_error!(env, TokenError::InsufficientAllowance);
     }
-    env.storage()
-        .persistent()
-        .set(&DataKey::Allowance(from.clone(), spender.clone()), &(current - amount));
+    env.storage().persistent().set(
+        &DataKey::Allowance(from.clone(), spender.clone()),
+        &(current - amount),
+    );
 }
 
 fn move_balance(env: &Env, from: &Address, to: &Address, amount: i128) {

@@ -2,8 +2,8 @@
 
 use agentro_interfaces::PaymentContractTrait;
 use soroban_sdk::{
-    contract, contracterror, contractimpl, contracttype, panic_with_error, symbol_short, Address,
-    Env, token::TokenClient,
+    contract, contracterror, contractimpl, contracttype, panic_with_error, symbol_short,
+    token::TokenClient, Address, Env,
 };
 
 const INSTANCE_BUMP_AMOUNT: u32 = 7 * 24 * 60 * 60 / 5;
@@ -82,8 +82,10 @@ impl PaymentContractTrait for PaymentContract {
             .persistent()
             .set(&DataKey::SubscriptionExpiry(user.clone()), &expires_at);
 
-        env.events()
-            .publish((symbol_short!("payment"), user, treasury), (amount, expires_at));
+        env.events().publish(
+            (symbol_short!("payment"), user, treasury),
+            (amount, expires_at),
+        );
         extend_instance(&env);
     }
 
@@ -166,7 +168,9 @@ mod test {
         let admin = Address::generate(&env);
         let treasury = Address::generate(&env);
         let user = Address::generate(&env);
-        let token_id = env.register_stellar_asset_contract_v2(admin.clone()).address();
+        let token_id = env
+            .register_stellar_asset_contract_v2(admin.clone())
+            .address();
         let payment_id = env.register(PaymentContract, ());
         let token = StellarAssetClient::new(&env, &token_id);
         let payment = PaymentContractClient::new(&env, &payment_id);

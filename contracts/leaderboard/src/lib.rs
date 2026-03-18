@@ -39,7 +39,9 @@ impl LeaderboardContractTrait for LeaderboardContract {
         }
         admin.require_auth();
         env.storage().instance().set(&DataKey::Admin, &admin);
-        env.storage().instance().set(&DataKey::Users, &Vec::<Address>::new(&env));
+        env.storage()
+            .instance()
+            .set(&DataKey::Users, &Vec::<Address>::new(&env));
         extend_instance(&env);
     }
 
@@ -129,7 +131,11 @@ impl LeaderboardContractTrait for LeaderboardContract {
         }
 
         let mut top = Vec::<UserStats>::new(&env);
-        let max = if limit < stats.len() { limit } else { stats.len() };
+        let max = if limit < stats.len() {
+            limit
+        } else {
+            stats.len()
+        };
         let mut idx = 0;
         while idx < max {
             top.push_back(stats.get(idx).unwrap());

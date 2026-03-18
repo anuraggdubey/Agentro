@@ -43,7 +43,12 @@ pub struct AgentManagerContract;
 
 #[contractimpl]
 impl AgentManagerContract {
-    pub fn initialize(env: Env, admin: Address, payment_contract: Address, default_analysis_fee: i128) {
+    pub fn initialize(
+        env: Env,
+        admin: Address,
+        payment_contract: Address,
+        default_analysis_fee: i128,
+    ) {
         if env.storage().instance().has(&DataKey::Admin) {
             panic_with_error!(&env, AgentManagerError::AlreadyInitialized);
         }
@@ -76,7 +81,9 @@ impl AgentManagerContract {
         env.storage()
             .persistent()
             .set(&DataKey::UserAgents(owner.clone()), &owned);
-        env.storage().instance().set(&DataKey::NextAgentId, &(id + 1));
+        env.storage()
+            .instance()
+            .set(&DataKey::NextAgentId, &(id + 1));
 
         env.events()
             .publish((symbol_short!("agt_crtd"), owner), (id, agent.created_at));
@@ -88,7 +95,8 @@ impl AgentManagerContract {
         let agent = Self::get_agent(env.clone(), agent_id);
         user.require_auth();
         let charge = amount.unwrap_or(get_default_analysis_fee(&env));
-        PaymentContractClient::new(&env, &get_payment_contract(&env)).pay_for_analysis(&user, &charge);
+        PaymentContractClient::new(&env, &get_payment_contract(&env))
+            .pay_for_analysis(&user, &charge);
 
         env.events().publish(
             (symbol_short!("agt_used"), agent.owner, user),
@@ -161,7 +169,9 @@ mod test {
         let treasury = Address::generate(&env);
         let owner = Address::generate(&env);
         let user = Address::generate(&env);
-        let token_id = env.register_stellar_asset_contract_v2(admin.clone()).address();
+        let token_id = env
+            .register_stellar_asset_contract_v2(admin.clone())
+            .address();
         let payment_id = env.register(PaymentContract, ());
         let manager_id = env.register(AgentManagerContract, ());
 
@@ -173,7 +183,8 @@ mod test {
         payment.initialize(&admin, &token_id, &treasury, &75, &(30 * 24 * 60 * 60));
         manager.initialize(&admin, &payment_id, &75);
 
-        let agent_id = manager.create_agent(&owner, &String::from_str(&env, "ipfs://agent-metadata"));
+        let agent_id =
+            manager.create_agent(&owner, &String::from_str(&env, "ipfs://agent-metadata"));
         assert_eq!(manager.get_agent(&agent_id).owner, owner);
         assert_eq!(manager.list_user_agents(&owner).len(), 1);
 
