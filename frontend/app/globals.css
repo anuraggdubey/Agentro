@@ -1,0 +1,243 @@
+@import "tailwindcss";
+
+:root {
+  --color-background: #050816;
+  --color-foreground: #f5f7ff;
+  --color-card: rgba(255, 255, 255, 0.04);
+  --color-primary: #7b5cff;
+  --color-secondary: #00d4ff;
+  --color-accent: #ff4ecd;
+  --color-highlight: #00f5d4;
+  --color-muted: #9ca3af;
+  --color-border: rgba(255, 255, 255, 0.08);
+
+  --font-sans: "Inter", "Space Grotesk", sans-serif;
+  --bg-aurora-primary: linear-gradient(135deg, #7b5cff, #00d4ff, #ff4ecd);
+}
+
+[data-theme='light'] {
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
+  --color-card: rgba(0, 0, 0, 0.03);
+  --color-muted: #64748b;
+  --color-border: rgba(0, 0, 0, 0.08);
+  
+  --bg-aurora-primary: linear-gradient(135deg, #6366f1, #06b6d4, #ec4899);
+}
+
+@theme {
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --color-card: var(--color-card);
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+  --color-highlight: var(--color-highlight);
+  --color-muted: var(--color-muted);
+  --color-border: var(--color-border);
+}
+
+html, body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  width: 100%;
+  min-height: 100vh;
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Unified Aurora Background */
+.aurora-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background-color: var(--color-background);
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.aurora-blob {
+  position: absolute;
+  filter: blur(120px);
+  pointer-events: none;
+  animation: aurora-float 30s infinite alternate ease-in-out;
+}
+
+/* User Specific Radial Gradients */
+.blob-1 {
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle at center, rgba(123,92,255,0.35), transparent 70%);
+  top: -100px;
+  left: -100px;
+}
+
+[data-theme='light'] .blob-1 {
+  background: radial-gradient(circle at center, rgba(123,92,255,0.25), transparent 70%);
+}
+
+.blob-2 {
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(circle at center, rgba(0,212,255,0.30), transparent 70%);
+  bottom: -200px;
+  right: -100px;
+  animation-delay: -10s;
+}
+
+[data-theme='light'] .blob-2 {
+  background: radial-gradient(circle at center, rgba(0,212,255,0.20), transparent 70%);
+}
+
+.blob-3 {
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle at center, rgba(255,78,205,0.25), transparent 70%);
+  top: 40%;
+  left: 50%;
+  animation-delay: -20s;
+}
+
+[data-theme='light'] .blob-3 {
+  background: radial-gradient(circle at center, rgba(255,78,205,0.18), transparent 70%);
+}
+
+@keyframes aurora-float {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(60px, 40px) scale(1.1); }
+}
+
+/* User Specific Glassmorphism Spec */
+.glass-panel {
+  background: var(--color-card);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme='dark'] .glass-panel {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+}
+
+.glass-panel:hover {
+  background: rgba(var(--color-foreground), 0.05);
+  border-color: rgba(var(--color-primary), 0.4);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.1), 
+    0 0 30px rgba(123, 92, 255, 0.1);
+  transform: translateY(-2px) scale(1.01);
+}
+
+[data-theme='dark'] .glass-panel:hover {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.6), 
+    0 0 30px rgba(123, 92, 255, 0.2);
+}
+
+.glass-card {
+  background: var(--color-card);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme='dark'] .glass-card {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+.glass-card:hover {
+  background: rgba(var(--color-foreground), 0.08);
+  border-color: var(--color-primary);
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.1), 
+    0 0 40px rgba(var(--color-primary), 0.2);
+  backdrop-filter: blur(40px) saturate(200%);
+}
+
+[data-theme='dark'] .glass-card:hover {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.8), 
+    0 0 40px rgba(0, 212, 255, 0.3);
+}
+
+.text-muted {
+  color: var(--color-muted);
+}
+
+.glass-interactive {
+  transition: all 0.3s ease;
+}
+
+.glass-interactive:hover {
+  filter: brightness(1.2);
+  transform: scale(1.05);
+  z-index: 10;
+}
+
+/* Typography Gradient */
+.text-gradient {
+  background: var(--bg-aurora-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* User Specific Buttons */
+.btn-primary {
+  background: linear-gradient(135deg, #7b5cff, #00d4ff, #ff4ecd);
+  border-radius: 12px;
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(123, 92, 255, 0.4);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+  opacity: 0.5;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

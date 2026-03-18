@@ -1,0 +1,29 @@
+[workspace]
+members = [
+    "interfaces",
+    "agent-token",
+    "agent-manager",
+    "payment",
+    "bounty",
+    "leaderboard",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+publish = false
+
+[workspace.dependencies]
+soroban-sdk = "25.3.0"
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
