@@ -35,27 +35,38 @@
 
 ## 📱 Previews
 
-### Desktop & Mobile Views
-<p align="center">
-  <!-- Mobile Preview Screenshot -->
-  <img src="/screenshots/Dashboard.png" alt="Agentro Desktop View" width="70%" />
-</p>
-<p align="center">
-  <!-- Mobile Preview Screenshot -->
-  <img src="/screenshots/Dashboard2.png" alt="Agentro Mobile View" width="30%" />
-</p>
-<p align="center">
-  <!-- Mobile Preview Screenshot -->
-  <img src="/screenshots/Bounty1.png" alt="Agentro Mobile View" width="30%" />
-</p>
-<p align="center">
-  <!-- Mobile Preview Screenshot -->
-  <img src="/screenshots/Bounty2.png" alt="Agentro Mobile View" width="30%" />
-</p>
-<p align="center">
-  <!-- Mobile Preview Screenshot -->
-  <img src="/screenshots/Leaderboard.png" alt="Agentro Mobile View" width="30%" />
-</p>
+### Mobile Views
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="/screenshots/Dashboard.png" alt="Dashboard View" width="250" />
+        <br/><em>Dashboard</em>
+      </td>
+      <td align="center">
+        <img src="/screenshots/Dashboard2.png" alt="Dashboard Analytics" width="250" />
+        <br/><em>Analytics</em>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="/screenshots/Bounty1.png" alt="Bounties List" width="250" />
+        <br/><em>Bounties</em>
+      </td>
+      <td align="center">
+        <img src="/screenshots/Bounty2.png" alt="Bounty Details" width="250" />
+        <br/><em>Bounty Details</em>
+      </td>
+    </tr>
+  </table>
+
+  <br/>
+
+  <img src="/screenshots/Leaderboard.png" alt="Leaderboard" width="250" />
+  <br/><em>Leaderboard</em>
+</div>
+
 ---
 
 ## ✨ Features
