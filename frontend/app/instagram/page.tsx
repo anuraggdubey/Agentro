@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Instagram, 
-  MessageSquare, 
   Sparkles,
   Play,
   Copy,
@@ -15,8 +14,6 @@ import {
   Activity,
   Search,
   TrendingUp,
-  BarChart3,
-  Share2
 } from "lucide-react";
 import { fetchTrends, generateStrategy } from "@/lib/api";
 
@@ -24,6 +21,15 @@ interface Trend {
   title: string;
   description: string;
   url: string;
+}
+
+interface Strategy {
+  hook: string;
+  idea: string;
+  viralityScore: number;
+  retentionSignal?: string;
+  reachEstimate?: string;
+  velocityIndex?: string;
 }
 
 const CircularProgress = ({ value }: { value: number }) => {
@@ -65,7 +71,7 @@ const CircularProgress = ({ value }: { value: number }) => {
 export default function InstagramPage() {
   const [trends, setTrends] = useState<Trend[]>([]);
   const [selectedTrend, setSelectedTrend] = useState<string>("");
-  const [strategy, setStrategy] = useState<any>(null);
+  const [strategy, setStrategy] = useState<Strategy | null>(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -80,8 +86,8 @@ export default function InstagramPage() {
         const data = await fetchTrends();
         setTrends(data.trends || []);
         if (data.trends?.length > 0) setSelectedTrend(data.trends[0].title);
-      } catch (err) {
-        console.error(err);
+      } catch (loadError) {
+        console.error(loadError);
       }
     }
     loadTrends();
@@ -96,8 +102,8 @@ export default function InstagramPage() {
       const data = await fetchTrends(searchQuery);
       setTrends(data.trends || []);
       if (data.trends?.length > 0) setSelectedTrend(data.trends[0].title);
-    } catch (err) {
-      console.error("Search failed", err);
+    } catch (searchError) {
+      console.error("Search failed", searchError);
     } finally {
       setIsSearching(false);
     }
@@ -112,8 +118,8 @@ export default function InstagramPage() {
       const data = await fetchTrends(query);
       setTrends(data.trends || []);
       if (data.trends?.length > 0) setSelectedTrend(data.trends[0].title);
-    } catch (err) {
-      console.error("Category filter failed", err);
+    } catch (categoryError) {
+      console.error("Category filter failed", categoryError);
     } finally {
       setIsSearching(false);
     }
@@ -125,8 +131,8 @@ export default function InstagramPage() {
     try {
       const data = await generateStrategy(selectedTrend, "instagram");
       setStrategy(data);
-    } catch (err) {
-      console.error(err);
+    } catch (generateError) {
+      console.error(generateError);
     } finally {
       setLoading(false);
     }
@@ -275,7 +281,7 @@ export default function InstagramPage() {
                       <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary relative z-10 flex items-center">
                          Viral Anchor Signal
                       </p>
-                      <p className="text-3xl font-black italic leading-tight text-white relative z-10">"{strategy.hook}"</p>
+                      <p className="text-3xl font-black italic leading-tight text-white relative z-10">&quot;{strategy.hook}&quot;</p>
                     </div>
 
                     <div className="space-y-6">
@@ -297,7 +303,7 @@ export default function InstagramPage() {
                         <p className="text-[9px] font-black uppercase tracking-[0.3em] text-muted/40 mb-8">Performance Index</p>
                         <CircularProgress value={strategy.viralityScore} />
                         <p className="text-[10px] font-medium text-white/40 mt-8 leading-relaxed italic border-t border-white/5 pt-6 w-full">
-                          "Optimal signal synchronization detected."
+                          &quot;Optimal signal synchronization detected.&quot;
                         </p>
                       </div>
                     </div>

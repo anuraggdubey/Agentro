@@ -1,24 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Twitter, 
-  MessageSquare, 
   Layers, 
   Zap,
-  ArrowRight,
   BarChart2,
   Loader2,
   ChevronDown,
   Sparkles,
   Search,
-  TrendingUp,
-  BarChart3,
-  Share2,
   Copy,
   Check,
-  MousePointer2
 } from "lucide-react";
 import { fetchTrends, generateStrategy } from "@/lib/api";
 
@@ -26,6 +20,15 @@ interface Trend {
   title: string;
   description: string;
   url: string;
+}
+
+interface Strategy {
+  hook: string;
+  idea: string;
+  viralityScore: number;
+  velocityIndex?: string;
+  reachEstimate?: string;
+  retentionSignal?: string;
 }
 
 const CircularProgress = ({ value }: { value: number }) => {
@@ -67,7 +70,7 @@ const CircularProgress = ({ value }: { value: number }) => {
 export default function XPage() {
   const [trends, setTrends] = useState<Trend[]>([]);
   const [selectedTrend, setSelectedTrend] = useState<string>("");
-  const [strategy, setStrategy] = useState<any>(null);
+  const [strategy, setStrategy] = useState<Strategy | null>(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -82,8 +85,8 @@ export default function XPage() {
         const data = await fetchTrends();
         setTrends(data.trends || []);
         if (data.trends?.length > 0) setSelectedTrend(data.trends[0].title);
-      } catch (err) {
-        console.error(err);
+      } catch (loadError) {
+        console.error(loadError);
       }
     }
     loadTrends();
@@ -98,8 +101,8 @@ export default function XPage() {
       const data = await fetchTrends(searchQuery);
       setTrends(data.trends || []);
       if (data.trends?.length > 0) setSelectedTrend(data.trends[0].title);
-    } catch (err) {
-      console.error("Search failed", err);
+    } catch (searchError) {
+      console.error("Search failed", searchError);
     } finally {
       setIsSearching(false);
     }
@@ -114,8 +117,8 @@ export default function XPage() {
       const data = await fetchTrends(query);
       setTrends(data.trends || []);
       if (data.trends?.length > 0) setSelectedTrend(data.trends[0].title);
-    } catch (err) {
-      console.error("Category filter failed", err);
+    } catch (categoryError) {
+      console.error("Category filter failed", categoryError);
     } finally {
       setIsSearching(false);
     }
@@ -127,8 +130,8 @@ export default function XPage() {
     try {
       const data = await generateStrategy(selectedTrend, "x");
       setStrategy(data);
-    } catch (err) {
-      console.error(err);
+    } catch (generateError) {
+      console.error(generateError);
     } finally {
       setLoading(false);
     }
@@ -272,7 +275,7 @@ export default function XPage() {
                       <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40 relative z-10 flex items-center">
                          Viral Anchor Alpha (Post #1)
                       </p>
-                      <p className="text-3xl font-black italic leading-tight text-white relative z-10">"{strategy.hook}"</p>
+                      <p className="text-3xl font-black italic leading-tight text-white relative z-10">&quot;{strategy.hook}&quot;</p>
                     </div>
 
                     <div className="space-y-4">
@@ -284,7 +287,7 @@ export default function XPage() {
                       <p className="text-[9px] font-black uppercase tracking-[0.4em] text-secondary border-l-2 border-secondary pl-6">Signal Meta Analysis</p>
                       <div className="glass-panel p-8 rounded-xl border-white/5 bg-white/2 shadow-inner">
                         <p className="text-base text-white/50 italic leading-relaxed">
-                          "Optimized for algorithmic acceleration on {selectedTrend}."
+                          &quot;Optimized for algorithmic acceleration on {selectedTrend}.&quot;
                         </p>
                       </div>
                     </div>

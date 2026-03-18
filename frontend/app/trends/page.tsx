@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  TrendingUp, 
   Search, 
   Map, 
   ArrowUpRight, 
@@ -45,12 +44,26 @@ interface Trend {
   url: string;
 }
 
+interface Strategy {
+  hook: string;
+  idea: string;
+  viralityScore: number;
+  reasoning: string;
+}
+
+interface HeatmapPoint {
+  x: number;
+  y: number;
+  z: number;
+  name: string;
+}
+
 export default function TrendsPage() {
   const [trends, setTrends] = useState<Trend[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedTrend, setSelectedTrend] = useState<string | null>(null);
-  const [strategy, setStrategy] = useState<any>(null);
+  const [strategy, setStrategy] = useState<Strategy | null>(null);
   const [generating, setGenerating] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -64,7 +77,7 @@ export default function TrendsPage() {
         setLoading(true);
         const data = await fetchTrends();
         setTrends(data.trends || []);
-      } catch (err) {
+      } catch {
         setError("Unable to fetch trends right now. Please try again.");
       } finally {
         setLoading(false);
@@ -82,7 +95,7 @@ export default function TrendsPage() {
     try {
       const data = await fetchTrends(searchQuery);
       setTrends(data.trends || []);
-    } catch (err) {
+    } catch {
       setError("Search failed. Please try again.");
     } finally {
       setIsSearching(false);
@@ -97,7 +110,7 @@ export default function TrendsPage() {
       const query = category === "All" ? "" : category;
       const data = await fetchTrends(query);
       setTrends(data.trends || []);
-    } catch (err) {
+    } catch {
       setError("Failed to filter trends.");
     } finally {
       setIsSearching(false);
@@ -111,8 +124,8 @@ export default function TrendsPage() {
     try {
       const data = await generateStrategy(trend.title, "general");
       setStrategy(data);
-    } catch (err) {
-      console.error(err);
+    } catch (generateError) {
+      console.error(generateError);
     } finally {
       setGenerating(false);
     }
@@ -205,7 +218,7 @@ export default function TrendsPage() {
               <Scatter 
                 name="Trends" 
                 data={heatmapData}
-                onClick={(data) => {
+                onClick={(data: { payload?: HeatmapPoint } | undefined) => {
                   if (data && data.payload) {
                     // Try to find a matching trend in the API results or just use the name
                     const matchingTrend = trends.find(t => t.title.toLowerCase().includes(data.payload.name.toLowerCase()));
@@ -350,7 +363,7 @@ export default function TrendsPage() {
                   <div className="space-y-6">
                     <div className="p-10 rounded-2xl glass-panel border-border shadow-inner bg-card relative overflow-hidden group/hook">
                        <p className="text-[9px] font-black text-primary uppercase tracking-[0.4em] mb-6 border-b border-primary/20 pb-4 inline-block">The Apex Hook</p>
-                       <p className="text-2xl font-bold text-foreground italic leading-tight">"{strategy.hook}"</p>
+                       <p className="text-2xl font-bold text-foreground italic leading-tight">&quot;{strategy.hook}&quot;</p>
                     </div>
                     
                     <div className="p-8 rounded-2xl bg-card border border-border">
@@ -369,7 +382,7 @@ export default function TrendsPage() {
                       </div>
                     </div>
                     <p className="text-base font-medium italic text-muted leading-relaxed border-l-2 border-highlight/30 pl-8">
-                       "{strategy.reasoning}"
+                       &quot;{strategy.reasoning}&quot;
                     </p>
                   </div>
 

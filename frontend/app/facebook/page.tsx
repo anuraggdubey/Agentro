@@ -1,24 +1,19 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Facebook, 
   Users, 
   MessageCircle, 
   Target,
-  ArrowRight,
-  ShieldCheck,
   TrendingUp,
   Loader2,
   ChevronDown,
   Sparkles,
   Search,
-  BarChart3,
-  Share2,
   Copy,
   Check,
-  Heart
 } from "lucide-react";
 import { fetchTrends, generateStrategy } from "@/lib/api";
 
@@ -26,6 +21,17 @@ interface Trend {
   title: string;
   description: string;
   url: string;
+}
+
+interface Strategy {
+  title: string;
+  hook: string;
+  idea: string;
+  viralityScore: number;
+  reasoning: string;
+  reachEstimate?: string;
+  retentionSignal?: string;
+  velocityIndex?: string;
 }
 
 const CircularProgress = ({ value }: { value: number }) => {
@@ -67,7 +73,7 @@ const CircularProgress = ({ value }: { value: number }) => {
 export default function FacebookPage() {
   const [trends, setTrends] = useState<Trend[]>([]);
   const [selectedTrend, setSelectedTrend] = useState<string>("");
-  const [strategy, setStrategy] = useState<any>(null);
+  const [strategy, setStrategy] = useState<Strategy | null>(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -82,8 +88,8 @@ export default function FacebookPage() {
         const data = await fetchTrends();
         setTrends(data.trends || []);
         if (data.trends?.length > 0) setSelectedTrend(data.trends[0].title);
-      } catch (err) {
-        console.error(err);
+      } catch (loadError) {
+        console.error(loadError);
       }
     }
     loadTrends();
@@ -98,8 +104,8 @@ export default function FacebookPage() {
       const data = await fetchTrends(searchQuery);
       setTrends(data.trends || []);
       if (data.trends?.length > 0) setSelectedTrend(data.trends[0].title);
-    } catch (err) {
-      console.error("Search failed", err);
+    } catch (searchError) {
+      console.error("Search failed", searchError);
     } finally {
       setIsSearching(false);
     }
@@ -114,8 +120,8 @@ export default function FacebookPage() {
       const data = await fetchTrends(query);
       setTrends(data.trends || []);
       if (data.trends?.length > 0) setSelectedTrend(data.trends[0].title);
-    } catch (err) {
-      console.error("Category filter failed", err);
+    } catch (categoryError) {
+      console.error("Category filter failed", categoryError);
     } finally {
       setIsSearching(false);
     }
@@ -127,8 +133,8 @@ export default function FacebookPage() {
     try {
       const data = await generateStrategy(selectedTrend, "facebook");
       setStrategy(data);
-    } catch (err) {
-      console.error(err);
+    } catch (generateError) {
+      console.error(generateError);
     } finally {
       setLoading(false);
     }
@@ -278,7 +284,7 @@ export default function FacebookPage() {
                       <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[#1877F2] relative z-10 flex items-center">
                          Viral Discussion Anchor
                       </p>
-                      <p className="text-3xl font-black italic leading-tight text-white relative z-10">"{strategy.hook}"</p>
+                      <p className="text-3xl font-black italic leading-tight text-white relative z-10">&quot;{strategy.hook}&quot;</p>
                     </div>
 
                     <div className="space-y-6">
@@ -301,7 +307,7 @@ export default function FacebookPage() {
                         <CircularProgress value={strategy.viralityScore} />
                         <div className="mt-10 p-6 glass-panel rounded-xl border-white/5 bg-white/2 shadow-inner">
                            <p className="text-[10px] font-medium text-white/40 leading-relaxed italic border-white/5 pt-2 w-full">
-                            "{strategy.reasoning}"
+                            &quot;{strategy.reasoning}&quot;
                            </p>
                         </div>
                       </div>
