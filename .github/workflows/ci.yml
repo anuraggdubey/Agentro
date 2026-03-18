@@ -18,10 +18,14 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Build contracts
-        run: cargo build --workspace
+        run: |
+          cd contracts
+          cargo build --workspace
 
       - name: Run contract tests
-        run: cargo test --workspace
+        run: |
+          cd contracts
+          cargo test --workspace
 
       # 🌐 Setup Node (frontend)
       - name: Setup Node.js
