@@ -6,6 +6,7 @@ import { Search, Bell, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
 import { ConnectWalletButton } from "@/components/ConnectWalletButton";
+import { CopyAddressButton } from "@/components/CopyAddressButton";
 import { useWallet } from "@/hooks/useWallet";
 import { shortenAddress } from "@/lib/stellar";
 
@@ -41,14 +42,17 @@ export function Topbar() {
 
         <div className="flex items-center space-x-4 pl-4 md:pl-6 border-l border-white/10">
           {isConnected ? (
-            <div className="text-right hidden md:block">
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/90">
-                {shortenAddress(address)}
-              </p>
-              <p className="text-[9px] text-muted font-black uppercase tracking-widest mt-0.5 px-2 py-0.5 bg-white/5 rounded-md inline-flex items-center gap-1">
-                <ShieldCheck size={10} />
-                Wallet Verified
-              </p>
+            <div className="hidden md:flex items-center gap-3">
+              <div className="text-right">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/90">
+                  {shortenAddress(address)}
+                </p>
+                <p className="text-[9px] text-muted font-black uppercase tracking-widest mt-0.5 px-2 py-0.5 bg-white/5 rounded-md inline-flex items-center gap-1">
+                  <ShieldCheck size={10} />
+                  Wallet Verified
+                </p>
+              </div>
+              {address ? <CopyAddressButton address={address} /> : null}
             </div>
           ) : null}
 

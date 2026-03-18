@@ -196,6 +196,21 @@ export async function getTokenBalance(address: string) {
   return formatAgtAmount(BigInt(raw));
 }
 
+export async function getTokenBalanceRaw(address: string) {
+  const raw = await simulateRead<bigint | string | number>(CONTRACT_IDS.token, "balance", [
+    toAddressScVal(address),
+  ]);
+  return BigInt(raw);
+}
+
+export async function getTokenAllowanceRaw(address: string, spender: string) {
+  const raw = await simulateRead<bigint | string | number>(CONTRACT_IDS.token, "allowance", [
+    toAddressScVal(address),
+    toAddressScVal(spender),
+  ]);
+  return BigInt(raw);
+}
+
 export async function listBounties() {
   const raw = await simulateRead<Record<string, unknown>[]>(CONTRACT_IDS.bounty, "list_bounties");
   return raw.map(normalizeBounty).sort((left, right) => right.id - left.id);
@@ -325,10 +340,36 @@ export async function createAndFundBounty(params: {
   description: string;
   reward: string;
 }) {
+  const rewardRaw = parseAgtAmount(params.reward);
+  const balanceRaw = await getTokenBalanceRaw(params.address);
+
+  if (rewardRaw <= BigInt(0)) {
+    throw new Error("Enter a reward greater than 0 AGT.");
+  }
+
+  if (balanceRaw < rewardRaw) {
+    throw new Error(
+      `Insufficient AGT balance. You need ${formatAgtAmount(rewardRaw)} AGT but only have ${formatAgtAmount(balanceRaw)} AGT.`,
+    );
+  }
+
   const created = await createBounty(params);
-  await approveToken(params.address, CONTRACT_IDS.bounty, params.reward);
-  await fundBounty(params.address, created.id);
-  return created.id;
+
+  try {
+    await approveToken(params.address, CONTRACT_IDS.bounty, params.reward);
+
+    const allowanceRaw = await getTokenAllowanceRaw(params.address, CONTRACT_IDS.bounty);
+    if (allowanceRaw < rewardRaw) {
+      throw new Error("AGT approval did not complete. Please approve the reward amount and try again.");
+    }
+
+    await fundBounty(params.address, created.id);
+    return created.id;
+  } catch (error) {
+    throw new Error(
+      `Bounty #${created.id} was created, but funding failed. The bounty remains pending until it is funded. ${friendlyError(error)}`,
+    );
+  }
 }
 
 export async function completeBounty(params: { resolver: string; bountyId: number; winner: string }) {
@@ -347,5 +388,19 @@ export async function createAgent(address: string, metadata: string) {
 }
 
 export function getReadableError(error: unknown) {
-  return friendlyError(error);
+  const message = friendlyError(error);
+
+  if (message.includes("contract:CALEZTBUJFWH7KQTW34LJL7JVG7X4TR7GBDPOSJZEDMOFRGIYFDRVL62") && message.includes("#7")) {
+    return "This bounty is not funded yet. Fund the bounty before trying to complete it.";
+  }
+
+  if (message.includes("CBHWUYJV7ST3Y2FFGIZQLAVSNAAPIAX7C54LDLDEEJG2YMNSL2DW7MJK") && message.includes("#4")) {
+    return "Insufficient AGT balance for this transaction.";
+  }
+
+  if (message.includes("CBHWUYJV7ST3Y2FFGIZQLAVSNAAPIAX7C54LDLDEEJG2YMNSL2DW7MJK") && message.includes("#5")) {
+    return "Insufficient AGT allowance. Approve the token spend and try again.";
+  }
+
+  return message;
 }

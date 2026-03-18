@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Crown, Loader2, Trophy, Wallet } from "lucide-react";
 import { ConnectWalletButton } from "@/components/ConnectWalletButton";
+import { CopyAddressButton } from "@/components/CopyAddressButton";
 import { useWallet } from "@/hooks/useWallet";
 import { getReadableError, getTopUsers, getUserStats, type LeaderboardUser, type UserStats } from "@/services/contractService";
 import { shortenAddress } from "@/lib/stellar";
@@ -56,7 +57,8 @@ export default function LeaderboardPage() {
 
       {currentUser ? (
         <section className="glass-panel rounded-2xl p-8 shadow-2xl">
-          <div className="flex items-center space-x-4 mb-6">
+          <div className="flex items-center justify-between gap-4 mb-6">
+            <div className="flex items-center space-x-4">
             <div className="p-3 bg-highlight/10 rounded-xl shadow-inner shadow-highlight/20">
               <Wallet className="text-highlight" size={20} />
             </div>
@@ -66,6 +68,8 @@ export default function LeaderboardPage() {
               </h2>
               <p className="text-sm text-white/60 mt-1">{shortenAddress(currentUser.user)}</p>
             </div>
+            </div>
+            <CopyAddressButton address={currentUser.user} />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, ChevronDown, Loader2, Wallet, X } from "lucide-react";
+import { CopyAddressButton } from "@/components/CopyAddressButton";
 import { shortenAddress } from "@/lib/stellar";
 import { useWallet } from "@/hooks/useWallet";
 
@@ -41,6 +42,7 @@ export function ConnectWalletButton() {
               {shortenAddress(address)}
             </p>
           </div>
+          <CopyAddressButton address={address} />
         </div>
         <button
           onClick={disconnectWallet}

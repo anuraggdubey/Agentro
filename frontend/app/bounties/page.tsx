@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Loader2, ScrollText, Sparkles, Trophy, Wallet } from "lucide-react";
 import { ConnectWalletButton } from "@/components/ConnectWalletButton";
+import { CopyAddressButton } from "@/components/CopyAddressButton";
 import { useWallet } from "@/hooks/useWallet";
 import {
   completeBounty,
@@ -129,12 +130,15 @@ export default function BountiesPage() {
             </div>
           </div>
 
-          {isConnected ? (
-            <div className="rounded-2xl border border-white/10 bg-card px-4 py-3 mb-6">
-              <p className="text-[9px] font-black uppercase tracking-[0.25em] text-muted">
-                Creator Wallet
-              </p>
-              <p className="mt-2 text-sm font-black text-white">{shortenAddress(address)}</p>
+          {isConnected && address ? (
+            <div className="rounded-2xl border border-white/10 bg-card px-4 py-3 mb-6 flex items-center justify-between gap-4">
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-[0.25em] text-muted">
+                  Creator Wallet
+                </p>
+                <p className="mt-2 text-sm font-black text-white">{shortenAddress(address)}</p>
+              </div>
+              <CopyAddressButton address={address} />
             </div>
           ) : (
             <div className="rounded-2xl border border-white/10 bg-card px-4 py-4 mb-6 text-sm text-white/65">
@@ -281,10 +285,10 @@ export default function BountiesPage() {
                     </div>
                     <button
                       onClick={() => handleCompleteBounty(bounty.id)}
-                      disabled={submitting || bounty.completed || !isConnected}
+                      disabled={submitting || bounty.completed || !bounty.funded || !isConnected}
                       className="rounded-xl border border-white/10 px-4 py-3 text-[10px] font-black uppercase tracking-[0.22em] text-white transition-all hover:bg-card disabled:opacity-50"
                     >
-                      Complete
+                      {bounty.funded ? "Complete" : "Awaiting Funding"}
                     </button>
                   </div>
                 </article>
