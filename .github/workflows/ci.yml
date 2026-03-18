@@ -1,0 +1,40 @@
+name: Agentro CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 🦀 Setup Rust (for Soroban contracts)
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build contracts
+        run: cargo build --workspace
+
+      - name: Run contract tests
+        run: cargo test --workspace
+
+      # 🌐 Setup Node (frontend)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
