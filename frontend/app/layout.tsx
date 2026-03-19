@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeContext";
 import { AppShell } from "@/components/AppShell";
 import { WalletProvider } from "@/context/WalletContext";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Agentro | AI Content Strategy Engine",
@@ -19,9 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.className} bg-background text-foreground antialiased custom-scrollbar`}
-      >
+      <body className="bg-background text-foreground antialiased custom-scrollbar">
         <WalletProvider>
           <ThemeProvider>
             <div className="aurora-bg">

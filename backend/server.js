@@ -26,6 +26,12 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Agentro Backend running on port ${PORT}`);
-});
+let server = null;
+
+if (require.main === module) {
+  server = app.listen(PORT, () => {
+    console.log(`Agentro Backend running on port ${PORT}`);
+  });
+}
+
+module.exports = { app, server };
