@@ -28,6 +28,7 @@
 </p>
 
 <p align="center">
+  <strong><a href="https://agentro-ai.vercel.app">Live Link</a></strong>
   📺 <strong><a href="https://drive.google.com/file/d/1UGWWNTsouYoJUhDBC3l6F2UBqGjw7gTK/view?usp=drive_link">Watch Demo Video</a></strong>
 </p>
 
