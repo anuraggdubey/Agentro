@@ -213,8 +213,7 @@ Agentro/
 │   └── lib/                     # Utility functions
 │
 └── .github/workflows/           # CI/CD pipelines
-    ├── ci.yml                   # Build, test, lint, security
-    └── deploy.yml               # Manual deployment workflow
+    └── ci.yml                   # Build, test, lint
 ```
 
 ---
@@ -291,7 +290,7 @@ Visit **http://localhost:3000** — the app will connect to the backend at `http
 ---
 ## CI/CD Pipeline Tests
 <td align="center">
-        <img src="/screenshots/ci workflow.png" alt="Bounty Details" width="70%" />
+        <img src="/screenshots/ci workflow.png" alt="Bounty Details" width="100%" />
         <br/><em>CI Workflow</em>
       </td>
 
@@ -397,82 +396,6 @@ Runs on every push to `main` and on all pull requests:
 | ⚙️ **Backend** | `npm ci` → Python deps install → Server start verification |
 | 🌐 **Frontend** | `npm ci` → ESLint → `npm run build` (with env vars) |
 | 🔒 **Security** | TruffleHog secret scan → `npm audit` on both packages |
-
-### Deploy Pipeline (`deploy.yml`)
-
-Manual trigger via `workflow_dispatch` with environment selection (staging/production):
-
-- Runs full CI first
-- Deploys contracts, backend, and frontend in parallel
-- Customizable deploy steps for your hosting provider
-
----
-
-## Production Deployment
-
-This repository is now wired for:
-
-- **Frontend** on Vercel via [`.github/workflows/deploy.yml`](/.github/workflows/deploy.yml)
-- **Backend** on Render via [`render.yaml`](/render.yaml) and the same deploy workflow
-
-### 1. Deploy the backend on Render
-
-Create a new **Blueprint** or **Web Service** in Render from this repository and point it to [`render.yaml`](/render.yaml).
-
-The backend runs from Docker because it needs both Node.js and Python at runtime.
-
-Set these Render environment variables:
-
-- `NEWS_API_KEY`
-- `REDDIT_CLIENT_ID`
-- `REDDIT_SECRET`
-- `GROQ_API_KEY`
-
-Render will expose the backend health endpoint at:
-
-- `/health`
-
-After the first deploy, copy your Render deploy hook URL and save it in GitHub Actions secrets as:
-
-- `RENDER_DEPLOY_HOOK_URL`
-
-### 2. Deploy the frontend on Vercel
-
-Import the repository into Vercel and set the project root to:
-
-- `frontend`
-
-Add the frontend environment variables in Vercel:
-
-- `NEXT_PUBLIC_API_URL`
-- `NEXT_PUBLIC_STELLAR_NETWORK`
-- `NEXT_PUBLIC_STELLAR_RPC_URL`
-- `NEXT_PUBLIC_STELLAR_HORIZON_URL`
-- `NEXT_PUBLIC_STELLAR_NETWORK_PASSPHRASE`
-- `NEXT_PUBLIC_STELLAR_READ_ADDRESS`
-- `NEXT_PUBLIC_XLM_ASSET_CONTRACT_ID`
-- `NEXT_PUBLIC_AGT_TOKEN_CONTRACT_ID`
-- `NEXT_PUBLIC_PAYMENT_CONTRACT_ID`
-- `NEXT_PUBLIC_LEADERBOARD_CONTRACT_ID`
-- `NEXT_PUBLIC_BOUNTY_CONTRACT_ID`
-- `NEXT_PUBLIC_AGENT_MANAGER_CONTRACT_ID`
-
-Set `NEXT_PUBLIC_API_URL` to your Render backend URL, for example:
-
-- `https://your-render-service.onrender.com`
-
-Then add these GitHub repository secrets so the deployment workflow can publish to Vercel:
-
-- `VERCEL_TOKEN`
-- `VERCEL_ORG_ID`
-- `VERCEL_PROJECT_ID`
-
-### 3. Trigger deployment
-
-Deployment can now happen in either of these ways:
-
-- push to `main`
-- manually run the `Deploy` workflow from the GitHub Actions tab
 
 ---
 
