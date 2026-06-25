@@ -1,5 +1,7 @@
 import { LandingPage } from "@/components/LandingPage";
 
-export default function HomePage() {
+const HomePage = () => {
   return <LandingPage />;
-}
+};
+
+export default HomePage;

@@ -95,3 +95,8 @@ Cargo.lock
 # Project-specific generated files
 backend/server.log
 backend/env_keys.log
+backend/body.json
+backend/error.json
+
+# Clerk Auth
+.clerk/
