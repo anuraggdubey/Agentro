@@ -109,7 +109,6 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
-
       - name: Cache Cargo registry
         uses: Swatinem/rust-cache@v2
         with:
