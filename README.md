@@ -6,7 +6,7 @@
   <img src="https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge" alt="License" />
 </p>
 
-<h1 align="center">🤖 Agentro</h1>
+<h1 align="center">Agentro</h1>
 
 <p align="center">
   <strong>AI Content Strategy Engine on the Stellar Blockchain</strong>
@@ -28,7 +28,7 @@
 </p>
 
 <p align="center">
-  👉 <strong><a href="https://agentro-theta.vercel.app/">Live Demo URL</a></strong> | 📺 <strong><a href="https://drive.google.com/file/d/1UGWWNTsouYoJUhDBC3l6F2UBqGjw7gTK/view?usp=drive_link">Watch Demo Video</a></strong>
+  <strong><a href="https://agentro-theta.vercel.app/">Live Demo URL</a></strong> | 📺 <strong><a href="https://drive.google.com/file/d/1UGWWNTsouYoJUhDBC3l6F2UBqGjw7gTK/view?usp=drive_link">Watch Demo Video</a></strong>
 </p>
 
 <br/>
